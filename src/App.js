@@ -1,8 +1,9 @@
 import React from 'react';
 import useInterval from 'useInterval';
 import useHotKeys from 'useHotKeys';
-import styled, { createGlobalStyle } from 'styled-components';
 import useDocumentTitle from 'useDocumentTitle';
+import styled, { createGlobalStyle } from 'styled-components';
+import media from 'mediaQueries';
 
 const getTimeBits = () => {
   const now = new Date();
@@ -33,24 +34,22 @@ const GlobalStyles = createGlobalStyle`
 const AppStyles = styled.div`
   background: #333;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 55vh;
 `;
 
 const Time = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  justify-content: center;
-  max-width: 50%;
 `;
 
 const Labels = styled.div`
   display: flex;
   width: 100%;
   font-family: Courier, Monaco, monospace;
-  margin-bottom: 1rem;
+  margin: 1rem 0 1rem 0;
   opacity: ${p => (p.show ? '0.2' : '0')};
   cursor: pointer;
   div {
@@ -64,7 +63,7 @@ const MinDisplay = styled.div``;
 const SecDisplay = styled.div``;
 
 const Bit = styled.div`
-  --size: 2rem;
+  --size: 1rem;
   display: inline-block;
   width: var(--size);
   height: var(--size);
@@ -75,6 +74,9 @@ const Bit = styled.div`
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
   margin: 1rem;
   transition: all 200ms;
+  ${media.phone`
+    --size: 2rem;
+  `}
 `;
 
 function App() {
