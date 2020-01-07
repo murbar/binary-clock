@@ -28,6 +28,7 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     color: white;
+    font-family: Courier, Monaco, monospace;
   }
 `;
 
@@ -48,7 +49,6 @@ const Time = styled.div`
 const Labels = styled.div`
   display: flex;
   width: 100%;
-  font-family: Courier, Monaco, monospace;
   margin: 1rem 0 1rem 0;
   opacity: ${p => (p.show ? '0.2' : '0')};
   cursor: pointer;
@@ -77,6 +77,15 @@ const Bit = styled.div`
   ${media.phone`
     --size: 2rem;
   `}
+`;
+
+const Foot = styled.div`
+  position: absolute;
+  bottom: 8px;
+  a {
+    color: rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+  }
 `;
 
 function App() {
@@ -123,6 +132,11 @@ function App() {
           ))}
         </SecDisplay>
       </Time>
+      <Foot>
+        <a href="https://github.com/murbar/binary-clock" title="See the code on GitHub">
+          &lt;/&gt;
+        </a>
+      </Foot>
     </AppStyles>
   );
 }
