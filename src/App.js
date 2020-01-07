@@ -2,6 +2,7 @@ import React from 'react';
 import useInterval from 'useInterval';
 import useHotKeys from 'useHotKeys';
 import styled, { createGlobalStyle } from 'styled-components';
+import useDocumentTitle from 'useDocumentTitle';
 
 const getTimeBits = () => {
   const now = new Date();
@@ -89,6 +90,8 @@ function App() {
   useHotKeys({
     l: toggleLabels
   });
+
+  useDocumentTitle(`${hrs.join('')} ${mins.join('')}`);
 
   return (
     <AppStyles>
