@@ -33,7 +33,6 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const AppStyles = styled.div`
-  background: #333;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -49,7 +48,7 @@ const Time = styled.div`
 const Labels = styled.div`
   display: flex;
   width: 100%;
-  margin: 1rem 0 1rem 0;
+  padding: 1rem 0 1rem 0;
   opacity: ${p => (p.show ? '0.2' : '0')};
   cursor: pointer;
   div {
