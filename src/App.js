@@ -10,7 +10,7 @@ const getTimeBits = () => {
   const hrs = now
     .getHours()
     .toString(2)
-    .padStart(4, '0');
+    .padStart(5, '0');
   const mins = now
     .getMinutes()
     .toString(2)
