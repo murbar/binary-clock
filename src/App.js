@@ -101,7 +101,8 @@ function App() {
     l: toggleLabels
   });
 
-  useDocumentTitle(`${hrs.join('')} ${mins.join('')}`);
+  const bitString = bitArray => bitArray.map(b => (b ? '●' : '◯')).join('');
+  useDocumentTitle(`${bitString(hrs)} | ${bitString(mins)}`);
 
   return (
     <AppStyles>
