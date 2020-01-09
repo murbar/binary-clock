@@ -73,8 +73,13 @@ const Bit = styled.div`
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
   margin: 1rem;
   transition: all 200ms;
-  ${media.phone`
+  ${media.small`
     --size: 2rem;
+    margin: 1.5rem;
+  `}
+  ${media.large`
+    --size: 3rem;
+    margin: 2rem;
   `}
 `;
 
