@@ -36,7 +36,9 @@ const AppStyles = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  min-height: 55vh;
+  ${media.large`
+    min-height: 65vh;
+  `}
 `;
 
 const Time = styled.div`
@@ -57,6 +59,7 @@ const Labels = styled.div`
     justify-content: center;
   }
 `;
+
 const HourDisplay = styled.div``;
 const MinDisplay = styled.div``;
 const SecDisplay = styled.div``;
