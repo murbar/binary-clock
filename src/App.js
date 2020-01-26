@@ -157,8 +157,7 @@ function App() {
     c: cycleColor
   });
 
-  const bitString = bitArray => bitArray.map(b => (b ? '●' : '◯')).join('');
-  useDocumentTitle(`${bitString(hrBits)} : ${bitString(minBits)}`);
+  useDocumentTitle(timeLabel);
 
   return (
     <AppStyles>
