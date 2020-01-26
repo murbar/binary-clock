@@ -6,15 +6,26 @@ import useDocumentTitle from 'useDocumentTitle';
 import styled, { createGlobalStyle } from 'styled-components';
 import media from 'mediaQueries';
 
-const colors = [
+const colorsDark = [
   '#ffffff',
   '#ff1744',
-  '#D500F9',
+  '#d500f9',
   '#2d2ae5',
-  '#18FFFF',
-  '#00E676',
+  '#18ffff',
+  '#00e676',
   '#ffff4d',
   '#ffa033'
+];
+
+const colorsLight = [
+  '#222222',
+  '#ff0022',
+  '#d500f9',
+  '#2d2ae5',
+  '#00d2d2',
+  '#00cc69',
+  '#e7d918',
+  '#ff941a'
 ];
 
 const getTimeBits = () => {
@@ -36,10 +47,10 @@ const getTimeBits = () => {
 
 const GlobalStyles = createGlobalStyle`
   body {
-    background: ${p => (p.dark ? '#222' : '#eee')};
+    background: ${p => (p.prefs.darkTheme ? '#222' : '#efefef')};
     margin: 0;
     padding: 0;
-    color: ${p => colors[p.color]};
+    color: ${p => p.colors[p.prefs.color]};
     font-family: Courier, Monaco, monospace;
   }
 `;
@@ -63,7 +74,7 @@ const Labels = styled.div`
   display: flex;
   width: 100%;
   padding: 1rem 0 1rem 0;
-  opacity: ${p => (p.show ? '1' : '0')};
+  opacity: ${p => (p.prefs.showLabels ? '1' : '0')};
   cursor: pointer;
   div {
     display: flex;
@@ -84,10 +95,10 @@ const Bit = styled.div`
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
-  background: ${p => colors[p.color]};
+  background: ${p => p.colors[p.prefs.color]};
   opacity: ${p => (p.bit ? '1' : '0.2')};
   transform: scale(${p => (p.bit ? '1' : '0.25')});
-  box-shadow: 0 0 5px ${p => colors[p.color]};
+  box-shadow: 0 0 5px ${p => p.colors[p.prefs.color]};
   margin: 1rem;
   transition: all 200ms;
   ${media.small`
@@ -111,15 +122,21 @@ const Foot = styled.div`
 
 function App() {
   const [[hrs, mins, secs], setTime] = React.useState(getTimeBits());
-  const [showLabels, setShowLabels] = React.useState(false);
-  const [color, setColor] = useLocalStorageState('colorPref', 0);
-  const [darkTheme, setDarkTheme] = useLocalStorageState('themePref', true);
+  const [prefs, setPrefs] = useLocalStorageState('userPrefs', {
+    showLabels: false,
+    color: 0,
+    darkTheme: true
+  });
+  const colors = prefs.darkTheme ? colorsDark : colorsLight;
 
-  const toggleLabels = () => setShowLabels(!showLabels);
+  const toggleLabels = () =>
+    setPrefs(prev => ({ ...prev, showLabels: !prev.showLabels }));
 
-  const toggleDarkTheme = () => setDarkTheme(!darkTheme);
+  const toggleDarkTheme = () =>
+    setPrefs(prev => ({ ...prev, darkTheme: !prev.darkTheme }));
 
-  const cycleColor = () => setColor(prev => (prev + 1) % colors.length);
+  const cycleColor = () =>
+    setPrefs(prev => ({ ...prev, color: (prev.color + 1) % colors.length }));
 
   useInterval(() => {
     setTime(getTimeBits());
@@ -136,9 +153,9 @@ function App() {
 
   return (
     <AppStyles>
-      <GlobalStyles dark={darkTheme} color={color} />
+      <GlobalStyles prefs={prefs} colors={colors} />
       <Time>
-        <Labels show={showLabels} onClick={toggleLabels}>
+        <Labels prefs={prefs} colors={colors} onClick={toggleLabels}>
           <div>32</div>
           <div>16</div>
           <div>8</div>
@@ -148,17 +165,17 @@ function App() {
         </Labels>
         <HourDisplay>
           {hrs.map((bit, key) => (
-            <Bit key={key} bit={!!bit} color={color} />
+            <Bit key={key} bit={!!bit} prefs={prefs} colors={colors} />
           ))}
         </HourDisplay>
         <MinDisplay>
           {mins.map((bit, key) => (
-            <Bit key={key} bit={!!bit} color={color} />
+            <Bit key={key} bit={!!bit} prefs={prefs} colors={colors} />
           ))}
         </MinDisplay>
         <SecDisplay>
           {secs.map((bit, key) => (
-            <Bit key={key} bit={!!bit} color={color} />
+            <Bit key={key} bit={!!bit} prefs={prefs} colors={colors} />
           ))}
         </SecDisplay>
       </Time>
