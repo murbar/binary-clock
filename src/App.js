@@ -45,6 +45,13 @@ const getTimeBits = () => {
   return [hrs, mins, secs].map(s => s.split('').map(b => (b === '1' ? 1 : 0)));
 };
 
+const getTimeText = () => {
+  const now = new Date();
+  return [now.getHours(), now.getMinutes(), now.getSeconds()]
+    .map(n => n.toString().padStart(2, '0'))
+    .join(' : ');
+};
+
 const GlobalStyles = createGlobalStyle`
   body {
     background: ${p => (p.prefs.darkTheme ? '#222' : '#efefef')};
@@ -76,6 +83,7 @@ const Labels = styled.div`
   padding: 1rem 0 1rem 0;
   opacity: ${p => (p.prefs.showLabels ? '1' : '0')};
   cursor: pointer;
+  justify-content: center;
   div {
     display: flex;
     flex: 1;
@@ -121,13 +129,14 @@ const Foot = styled.div`
 `;
 
 function App() {
-  const [[hrs, mins, secs], setTime] = React.useState(getTimeBits());
+  const [[hrBits, minBits, secBits], setTime] = React.useState(getTimeBits());
   const [prefs, setPrefs] = useLocalStorageState('userPrefs', {
     showLabels: false,
     color: 0,
     darkTheme: true
   });
   const colors = prefs.darkTheme ? colorsDark : colorsLight;
+  const timeLabel = getTimeText();
 
   const toggleLabels = () =>
     setPrefs(prev => ({ ...prev, showLabels: !prev.showLabels }));
@@ -149,7 +158,7 @@ function App() {
   });
 
   const bitString = bitArray => bitArray.map(b => (b ? '●' : '◯')).join('');
-  useDocumentTitle(`${bitString(hrs)} | ${bitString(mins)}`);
+  useDocumentTitle(`${bitString(hrBits)} : ${bitString(minBits)}`);
 
   return (
     <AppStyles>
@@ -164,20 +173,23 @@ function App() {
           <div>1</div>
         </Labels>
         <HourDisplay>
-          {hrs.map((bit, key) => (
+          {hrBits.map((bit, key) => (
             <Bit key={key} bit={!!bit} prefs={prefs} colors={colors} />
           ))}
         </HourDisplay>
         <MinDisplay>
-          {mins.map((bit, key) => (
+          {minBits.map((bit, key) => (
             <Bit key={key} bit={!!bit} prefs={prefs} colors={colors} />
           ))}
         </MinDisplay>
         <SecDisplay>
-          {secs.map((bit, key) => (
+          {secBits.map((bit, key) => (
             <Bit key={key} bit={!!bit} prefs={prefs} colors={colors} />
           ))}
         </SecDisplay>
+        <Labels prefs={prefs} colors={colors} onClick={toggleLabels}>
+          {timeLabel}
+        </Labels>
       </Time>
       <Foot>
         <a href="https://github.com/murbar/binary-clock" title="See the code on GitHub">
