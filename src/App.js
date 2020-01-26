@@ -36,10 +36,10 @@ const getTimeBits = () => {
 
 const GlobalStyles = createGlobalStyle`
   body {
-    background: #222;
+    background: ${p => (p.dark ? '#222' : '#eee')};
     margin: 0;
     padding: 0;
-    color: white;
+    color: ${p => colors[p.color]};
     font-family: Courier, Monaco, monospace;
   }
 `;
@@ -63,7 +63,7 @@ const Labels = styled.div`
   display: flex;
   width: 100%;
   padding: 1rem 0 1rem 0;
-  opacity: ${p => (p.show ? '0.2' : '0')};
+  opacity: ${p => (p.show ? '1' : '0')};
   cursor: pointer;
   div {
     display: flex;
@@ -104,7 +104,7 @@ const Foot = styled.div`
   position: absolute;
   bottom: 8px;
   a {
-    color: rgba(255, 255, 255, 0.2);
+    color: inherit;
     text-decoration: none;
   }
 `;
@@ -113,8 +113,11 @@ function App() {
   const [[hrs, mins, secs], setTime] = React.useState(getTimeBits());
   const [showLabels, setShowLabels] = React.useState(false);
   const [color, setColor] = useLocalStorageState('colorPref', 0);
+  const [darkTheme, setDarkTheme] = useLocalStorageState('themePref', true);
 
   const toggleLabels = () => setShowLabels(!showLabels);
+
+  const toggleDarkTheme = () => setDarkTheme(!darkTheme);
 
   const cycleColor = () => setColor(prev => (prev + 1) % colors.length);
 
@@ -124,6 +127,7 @@ function App() {
 
   useHotKeys({
     l: toggleLabels,
+    d: toggleDarkTheme,
     c: cycleColor
   });
 
@@ -132,7 +136,7 @@ function App() {
 
   return (
     <AppStyles>
-      <GlobalStyles />
+      <GlobalStyles dark={darkTheme} color={color} />
       <Time>
         <Labels show={showLabels} onClick={toggleLabels}>
           <div>32</div>
