@@ -1,9 +1,21 @@
 import React from 'react';
+import useLocalStorageState from 'useLocalStorageState';
 import useInterval from 'useInterval';
 import useHotKeys from 'useHotKeys';
 import useDocumentTitle from 'useDocumentTitle';
 import styled, { createGlobalStyle } from 'styled-components';
 import media from 'mediaQueries';
+
+const colors = [
+  '#ffffff',
+  '#ff1744',
+  '#D500F9',
+  '#2d2ae5',
+  '#18FFFF',
+  '#00E676',
+  '#ffff4d',
+  '#ffa033'
+];
 
 const getTimeBits = () => {
   const now = new Date();
@@ -24,7 +36,7 @@ const getTimeBits = () => {
 
 const GlobalStyles = createGlobalStyle`
   body {
-    background: #333;
+    background: #222;
     margin: 0;
     padding: 0;
     color: white;
@@ -61,7 +73,9 @@ const Labels = styled.div`
 `;
 
 const HourDisplay = styled.div``;
+
 const MinDisplay = styled.div``;
+
 const SecDisplay = styled.div``;
 
 const Bit = styled.div`
@@ -70,10 +84,10 @@ const Bit = styled.div`
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
-  background: white;
+  background: ${p => colors[p.color]};
   opacity: ${p => (p.bit ? '1' : '0.2')};
   transform: scale(${p => (p.bit ? '1' : '0.25')});
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 5px ${p => colors[p.color]};
   margin: 1rem;
   transition: all 200ms;
   ${media.small`
@@ -98,15 +112,19 @@ const Foot = styled.div`
 function App() {
   const [[hrs, mins, secs], setTime] = React.useState(getTimeBits());
   const [showLabels, setShowLabels] = React.useState(false);
+  const [color, setColor] = useLocalStorageState('colorPref', 0);
 
   const toggleLabels = () => setShowLabels(!showLabels);
+
+  const cycleColor = () => setColor(prev => (prev + 1) % colors.length);
 
   useInterval(() => {
     setTime(getTimeBits());
   }, 200);
 
   useHotKeys({
-    l: toggleLabels
+    l: toggleLabels,
+    c: cycleColor
   });
 
   const bitString = bitArray => bitArray.map(b => (b ? '●' : '◯')).join('');
@@ -126,17 +144,17 @@ function App() {
         </Labels>
         <HourDisplay>
           {hrs.map((bit, key) => (
-            <Bit key={key} bit={!!bit} />
+            <Bit key={key} bit={!!bit} color={color} />
           ))}
         </HourDisplay>
         <MinDisplay>
           {mins.map((bit, key) => (
-            <Bit key={key} bit={!!bit} />
+            <Bit key={key} bit={!!bit} color={color} />
           ))}
         </MinDisplay>
         <SecDisplay>
           {secs.map((bit, key) => (
-            <Bit key={key} bit={!!bit} />
+            <Bit key={key} bit={!!bit} color={color} />
           ))}
         </SecDisplay>
       </Time>
